@@ -1,4 +1,6 @@
 const Otp = require("../MODEL/OTP");
+const User = require("../MODEL/UserModel");
+
 
 const sendOtp = async (req, res) => {
   try {
@@ -14,8 +16,10 @@ const sendOtp = async (req, res) => {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
+    // delete old OTP
     await Otp.deleteMany({ phoneNumber });
 
+    // save new OTP
     await Otp.create({
       phoneNumber,
       otp,
@@ -30,7 +34,7 @@ const sendOtp = async (req, res) => {
       message: "OTP sent successfully",
       data: {
         phoneNumber,
-        otp, 
+        otp, // remove later in production
       },
     });
   } catch (error) {
@@ -42,6 +46,7 @@ const sendOtp = async (req, res) => {
   }
 };
 
+// ==================== VERIFY OTP ====================
 const verifyOtp = async (req, res) => {
   try {
     const { phoneNumber, otp } = req.body;
@@ -83,9 +88,14 @@ const verifyOtp = async (req, res) => {
       });
     }
 
+    // mark as verified
     otpRecord.verified = true;
     await otpRecord.save();
 
+    // 🔥 CHECK IF USER EXISTS
+    const user = await User.findOne({ phoneNumber });
+
+    // clean up OTP
     await Otp.deleteMany({ phoneNumber });
 
     return res.status(200).json({
@@ -94,6 +104,8 @@ const verifyOtp = async (req, res) => {
       data: {
         phoneNumber,
         verified: true,
+        exists: !!user, // 🔥 key part
+        user: user || null,
       },
     });
   } catch (error) {
