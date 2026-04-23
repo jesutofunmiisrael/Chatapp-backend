@@ -46,7 +46,7 @@ const sendOtp = async (req, res) => {
   }
 };
 
-// ==================== VERIFY OTP ====================
+
 const verifyOtp = async (req, res) => {
   try {
     const { phoneNumber, otp } = req.body;
