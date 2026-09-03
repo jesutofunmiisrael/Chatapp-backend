@@ -8,6 +8,8 @@ const {
   getUserByPhoneNumber,
 } = require("../Controller/UserController");
 
+//god
+
 router.post("/register", registerUser);
 router.put("/update/:phoneNumber", updateUser);
 router.get("/search/:query", searchUsers);
