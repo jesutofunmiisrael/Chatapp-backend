@@ -15,4 +15,7 @@ router.put("/update/:phoneNumber", updateUser);
 router.get("/search/:query", searchUsers);
 router.get("/:phoneNumber", getUserByPhoneNumber);
 
+// router.get("/:phoneNumber", getUserByPhoneNumber);
+// router.get("/:phoneNumber", getUserByPhoneNumber);
+
 module.exports = router;
